@@ -1,0 +1,16 @@
+doctype 
+html 
+    head 
+        meta(charset='utf-8')
+        title GIF ChatRoom 
+    body
+        div press F12 to check console tab and network tab 
+        script 
+            var socket = new WebSocket('ws://localhost:3000')
+            socket.onopen = function() {
+                console.log('connected to server successfully');
+            }
+            socket.onmessage = function(event) {
+                console.log(event.data);
+                socket.send('hello server');
+            }
