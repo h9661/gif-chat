@@ -6,7 +6,8 @@ const session = require('express-session');
 const flash = require('connect-flash');
 require('dotenv').config();
 
-//const indexRouter = require('./routes');
+const webSocket = require('./socket');
+const indexRouter = require('./routes/index');
 
 const app = express();
 
@@ -30,7 +31,7 @@ app.use(session({
 }));
 app.use(flash());
 
-//app.use('/', indexRouter);
+app.use('/', indexRouter);
 
 app.use((req,res,next)=>{
     const err = new Error('Not Found');
@@ -45,6 +46,8 @@ app.use((err,req,res)=>{
     res.render('error');
 });
 
-app.listen(app.get('port'),()=>{
+const server = app.listen(app.get('port'),()=>{
     console.log(app.get('port'),'번 포트에서 대기중');
 });
+
+webSocket(server);
