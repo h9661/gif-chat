@@ -52,3 +52,15 @@ const wss = new WebSocket.Server(serverOptions);
 wss.on('connection', (ws) => {
 });
 ```
+
+## 6. ws.send() can send string, buffer, arraybuffer, blob, object
+
+## 7. polling vs SSE(Server Sent Event) vs WebSocket
+- polling: client sends request to server periodically to check if there is new data.
+    - use http protocol
+
+- SSE: server sends data to client periodically if there is new data.
+    - use http protocol
+
+- WebSocket: client and server can send data to each other at any time.
+    - use ws protocol
