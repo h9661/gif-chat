@@ -2,7 +2,10 @@ const WebSocket = require('ws');
 
 // similar with net module that i've used in boostcamp chanllange.
 module.exports = (server)=>{
-    const wss = new WebSocket.Server({server});
+    const wss = new WebSocket.Server({
+        server,
+        backlog:1024
+    });
 
     wss.on('connection',(ws,req)=>{
         // get client ip address this method is popular. search and study.
