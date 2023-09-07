@@ -27,3 +27,28 @@ app.post('/login', (req, res) => {
     res.redirect('/login');
 });
 ```
+## 4. web broswer can use WebSocket API to create a WebSocket client whitout import library
+
+example:
+```js
+const ws = new WebSocket('ws://localhost:3000');
+ws.onopen = () => {
+    ws.send('Hello!');
+};
+```
+
+## 5. how to set ws server socket to SO_REUSEADDR
+```js
+const WebSocket = require('ws');
+const websocketPort = 8080;
+
+const serverOptions = {
+    port: websocketPort,
+    backlog: 1024, // maximum length of the queue of pending connections
+};
+
+const wss = new WebSocket.Server(serverOptions);
+
+wss.on('connection', (ws) => {
+});
+```
