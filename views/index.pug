@@ -4,13 +4,14 @@ html
         meta(charset='utf-8')
         title GIF ChatRoom 
     body
-        div press F12 to check console tab and network tab 
+        div press F12 to check console tab and network tab
+        script(src="/socket.io/socket.io.js")
         script.
-            var socket = new WebSocket('ws://localhost:3000')
-            socket.onopen = function() {
-                console.log('connected to server successfully');
-            }
-            socket.onmessage = function(event) {
-                console.log(event.data);
-                socket.send('hello server');
-            }
+            var socket = io.connect('http://localhost:3000', {
+                path: '/socket.io'
+            });
+
+            socket.on('news', function (data) {
+                console.log(data);
+                socket.emit('reply', 'hi server')
+            });
