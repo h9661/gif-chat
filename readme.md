@@ -73,3 +73,11 @@ wss.on("connection", (ws) => {});
 
 - WebSocket: client and server can send data to each other at any time.
   - use ws protocol
+
+## socket.io
+
+https://poiemaweb.com/nodejs-socketio
+
+## ubuntu mongodb 설치 후 연결하기
+
+notion에 정리함
