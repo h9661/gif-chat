@@ -81,3 +81,18 @@ https://poiemaweb.com/nodejs-socketio
 ## ubuntu mongodb 설치 후 연결하기
 
 notion에 정리함
+
+## 네임스페이스
+
+```js
+const socket = io.connect("http://localhost:3000/room", {
+  // 네임스페이스
+  path: "/socket.io",
+});
+```
+
+여기서 /room이란 네임스페이스를 뜻한다. 네임스페이스는 서버에서 socket.io를 사용할 때, 특정 경로를 지정해주는 것이다. 이렇게 하면 클라이언트에서도 해당 경로로 접속할 수 있다.
+
+## html5 데이터셋
+
+https://blogpack.tistory.com/680
