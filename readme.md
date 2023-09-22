@@ -96,3 +96,17 @@ const socket = io.connect("http://localhost:3000/room", {
 ## html5 데이터셋
 
 https://blogpack.tistory.com/680
+
+## session middleware
+
+```js
+chat.use((socket, next) => {
+  sessionMiddleware(socket.request, socket.request.res, next);
+});
+```
+
+이 부분을 공부하며 생겼던 의문과 내 결론을 정리해보자.
+
+session({options})는 해당 option을 가진 session middleware를 리턴한다.
+이후 그 이후 리턴한 미들웨어(req, res, next)를 하면 req에 session이 추가된다.
+아주 쉽죠? ㅋ
