@@ -59,5 +59,9 @@ module.exports = (server, app, sessionMiddleware) => {
         });
       }
     });
+
+    socket.on("chat", (data) => {
+      socket.to(data.room).emit("chat", data);
+    });
   });
 };
