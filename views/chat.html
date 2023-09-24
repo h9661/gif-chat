@@ -57,5 +57,68 @@
     div.appendChild(chat);
     document.querySelector("#chat-list").appendChild(div);
   });
+  socket.on("chat", function (data) {
+    const div = document.createElement("div");
+    div.classList.add("other");
+    const user = document.createElement("div");
+    user.textContent = data.user;
+    user.style.color = data.user;
+    div.appendChild(user);
+    if (data.gif) {
+      const img = document.createElement("img");
+      img.src = "/gif/" + data.gif;
+      div.appendChild(img);
+    } else {
+      const chat = document.createElement("div");
+      chat.textContent = data.chat;
+      div.appendChild(chat);
+    }
+    document.querySelector("#chat-list").appendChild(div);
+  });
+
+  document.querySelector("#chat-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const chat = document.querySelector("#chat").value;
+    const gif = document.querySelector("#gif").files[0];
+    const room = new URL(location).pathname.split("/").at(-1);
+    const user = "{{user}}";
+
+    console.log(chat, gif, room, user);
+
+    const formData = new FormData();
+    formData.append("chat", chat);
+    formData.append("gif", gif);
+    formData.append("room", room);
+    formData.append("user", user);
+
+    fetch("/chat", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        socket.emit("chat", data);
+
+        document.querySelector("#chat").value = "";
+        document.querySelector("#gif").value = "";
+
+        const div = document.createElement("div");
+        div.classList.add("mine");
+        const user = document.createElement("div");
+        user.textContent = data.user;
+        user.style.color = data.user;
+        div.appendChild(user);
+        if (data.gif) {
+          const img = document.createElement("img");
+          img.src = "/gif/" + data.gif;
+          div.appendChild(img);
+        } else {
+          const chat = document.createElement("div");
+          chat.textContent = data.chat;
+          div.appendChild(chat);
+        }
+        document.querySelector("#chat-list").appendChild(div);
+      });
+  });
 </script>
 {% endblock %}
