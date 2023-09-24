@@ -10,6 +10,7 @@ const ColorHash = require("color-hash").default;
 dotenv.config();
 const webSocket = require("./socket");
 const indexRouter = require("./routes");
+const chatRouter = require("./routes/chat");
 const connect = require("./schemas");
 
 const app = express();
@@ -33,6 +34,7 @@ const sessionMiddleware = session({
 
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/gif", express.static(path.join(__dirname, "uploads/gif")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
@@ -48,6 +50,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/", indexRouter);
+app.use("/chat", chatRouter);
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
