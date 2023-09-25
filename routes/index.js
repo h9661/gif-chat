@@ -51,8 +51,6 @@ router.get("/room/:id", async (req, res, next) => {
     const io = req.app.get("io");
     const { rooms } = io.of("/chat").adapter;
 
-    console.log(rooms, rooms.get(req.params.id), rooms.get(req.params.id));
-
     if (room.max <= rooms.get(req.params.id)?.size) {
       return res.redirect("/?error=허용 인원이 초과하였습니다.");
     }
