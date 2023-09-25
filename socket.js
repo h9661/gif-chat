@@ -30,6 +30,7 @@ module.exports = (server, app, sessionMiddleware) => {
       socket.to(data).emit("join", {
         user: "system",
         chat: `${socket.request.session.color}님이 입장하셨습니다.`,
+        userCount: socket.adapter.rooms.get(data).size,
       });
     });
 
@@ -38,8 +39,8 @@ module.exports = (server, app, sessionMiddleware) => {
       const { referer } = socket.request.headers; // referer: 이전 페이지의 주소
       const roomId = referer.split("/").at(-1); // 방 아이디 추출
       socket.leave(roomId); // leave(id): 방 아이디에서 나가는 메서드
-      const currentRoom = socket.adapter.rooms[roomId];
-      const userCount = currentRoom ? currentRoom.length : 0;
+      const currentRoom = socket.adapter.rooms.get(roomId);
+      const userCount = currentRoom ? currentRoom.size : 0;
 
       if (userCount == 0) {
         fetch(`http://localhost:3000/room/${roomId}`, {
@@ -56,6 +57,7 @@ module.exports = (server, app, sessionMiddleware) => {
         socket.to(roomId).emit("exit", {
           user: "system",
           chat: `${socket.request.session.color}님이 퇴장하셨습니다.`,
+          userCount: socket.adapter.rooms.get(roomId).size,
         });
       }
     });
