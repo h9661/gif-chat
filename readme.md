@@ -126,3 +126,10 @@ GitHub Copilot: `socket.to`는 Socket.IO에서 사용되는 메소드 중 하나
 예를 들어, `socket.to('room1').emit('message', 'Hello, room1!')`는 'room1'이라는 방에 속한 클라이언트들에게 'message'라는 이벤트와 함께 'Hello, room1!'이라는 데이터를 보냅니다.
 
 `socket.to`는 `socket.emit`과 달리, 특정한 방에 속한 클라이언트들에게만 메시지를 보내는 것이 가능합니다. 이를 통해, 특정한 그룹의 클라이언트들에게만 메시지를 보내는 것이 가능해집니다.
+
+socket.to는 서버에서만 할 수 있는 메서드이다.
+
+## socket.rooms
+
+socket이 가지는 방들의 목록을 Map 객체로 반환한다.
+socket.rooms.get(roomId)를 통해 특정 방의 정보를 가져올 수 있다. Map 객체로 반환한다. Map 객체는 key, value로 이루어진 객체이다. 따라서 [] 연산자를 통해 값을 가져올 수 없다. get 메서드를 통해 값을 가져와야 한다.
