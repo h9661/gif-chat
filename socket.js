@@ -34,6 +34,12 @@ module.exports = (server, app, sessionMiddleware) => {
       });
     });
 
+    socket.on("getUserList", (data) => {
+      socket.emit("postUserList", {
+        userList: Array.from(socket.adapter.rooms.get(data)),
+      });
+    });
+
     socket.on("disconnect", () => {
       console.log("chat 네임스페이스 접속 해제");
       const { referer } = socket.request.headers; // referer: 이전 페이지의 주소
