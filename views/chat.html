@@ -36,6 +36,15 @@
   <button type="submit">전송</button>
 </form>
 <div id="user-list"></div>
+<form accept="/dm" id="dm-form">
+  <label for="dm-gif">DM GIF 올리기</label>
+  <input type="file" id="dm-gif" name="dm-gif" accept="image/gif" />
+  <label for="dm-chat">메시지</label>
+  <input type="text" id="dm-chat" name="dm-chat" />
+  <label for="dm-id">ID</label>
+  <input type="text" id="dm-id" name="dm-id" />
+  <button type="submit">DM 전송</button>
+</form>
 <script src="/socket.io/socket.io.js"></script>
 <script>
   const socket = io.connect("http://localhost:3000/chat", {
@@ -99,6 +108,24 @@
       div.appendChild(user);
     }
   });
+  socket.on("dm", function (data) {
+    const div = document.createElement("div");
+    div.classList.add("dm");
+    const user = document.createElement("div");
+    user.textContent = `direct message from ${data.user}`;
+    user.style.color = data.user;
+    div.appendChild(user);
+    if (data.gif) {
+      const img = document.createElement("img");
+      img.src = "/gif/" + data.gif;
+      div.appendChild(img);
+    } else {
+      const chat = document.createElement("div");
+      chat.textContent = data.chat;
+      div.appendChild(chat);
+    }
+    document.querySelector("#chat-list").appendChild(div);
+  })
 
   document.querySelector("#chat-form").addEventListener("submit", function (e) {
     e.preventDefault();
@@ -144,5 +171,40 @@
         document.querySelector("#chat-list").appendChild(div);
       });
   });
+
+  document.querySelector("#dm-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const chat = document.querySelector("#dm-chat").value;
+    const gif = document.querySelector("#dm-gif").files[0];
+    const room = new URL(location).pathname.split("/").at(-1);
+    const user = "{{user}}";
+
+    const id = document.querySelector("#dm-id").value;
+
+    const formData = new FormData();
+    formData.append("chat", chat);
+    formData.append("gif", gif);
+    formData.append("room", room);
+    formData.append("user", user);
+
+    fetch("/chat", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        socket.emit("dm-request", {
+          id: id,
+          chat: data.chat,
+          gif: data.gif,
+          user: data.user,
+        });
+
+        document.querySelector("#dm-chat").value = "";
+        document.querySelector("#dm-gif").value = "";
+      });
+
+  })
 </script>
 {% endblock %}
