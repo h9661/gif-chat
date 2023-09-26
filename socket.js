@@ -34,6 +34,12 @@ module.exports = (server, app, sessionMiddleware) => {
       });
     });
 
+    socket.on("kickUser", (data) => {
+      socket.to(data).emit("kick", {
+        message: "방장에 의해 강퇴되었습니다.",
+      });
+    });
+
     socket.on("getUserList", (data) => {
       socket.emit("postUserList", {
         userList: Array.from(socket.adapter.rooms.get(data)),
