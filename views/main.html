@@ -19,7 +19,8 @@
         <td>{{room.max}}</td>
         <td style="color: {{room.owner}}">{{room.owner}}</td>
         <td>
-          <button data-password="{{'true' if room.password else 'false'}}" data-id="{{room._id}}" class="join-btn">입장</button>
+          <button data-password="{{'true' if room.password else 'false'}}" data-id="{{room._id}}"
+            class="join-btn">입장</button>
         </td>
       </tr>
       {% endfor %}
@@ -94,5 +95,11 @@
       alert(new URL(location.href).searchParams.get("error"));
     }
   };
+
+  window.onload = () => {
+    if (new URL(location.href).searchParams.get("message")) {
+      alert(new URL(location.href).searchParams.get("message"));
+    }
+  }
 </script>
 {% endblock %}
