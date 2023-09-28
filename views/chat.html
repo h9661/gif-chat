@@ -37,7 +37,7 @@
   <button type="submit">전송</button>
 </form>
 <div id="user-list"></div>
-<form accept="/dm" id="dm-form">
+<form accept="/dm" id="dm-form" enctype="multipart/form-data">
   <label for="dm-gif">DM GIF 올리기</label>
   <input type="file" id="dm-gif" name="dm-gif" accept="image/gif" />
   <label for="dm-chat">메시지</label>
@@ -147,10 +147,6 @@
       div.appendChild(chat);
     }
     document.querySelector("#chat-list").appendChild(div);
-  })
-
-  socket.on("kick", function (data) {
-
   })
 
   document.querySelector("#chat-form").addEventListener("submit", function (e) {
