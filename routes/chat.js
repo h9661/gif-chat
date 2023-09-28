@@ -6,16 +6,7 @@ const router = express.Router();
 
 // multer 설정
 const upload = multer({
-  storage: multer.diskStorage({
-    destination(req, file, cb) {
-      cb(null, "uploads/gif/");
-    },
-    filename(req, file, cb) {
-      // 파일명: 날짜-파일명.확장자
-      const ext = path.extname(file.originalname);
-      cb(null, path.basename(file.originalname, ext) + Date.now() + ext);
-    },
-  }),
+  dest: "uploads/gif/",
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
 });
 
@@ -25,7 +16,7 @@ router.post("/", upload.single("gif"), async (req, res, next) => {
       room: req.body.room,
       user: req.body.user,
       chat: req.body.chat,
-      gif: req.file ? `/gif/${req.file.filename}` : "",
+      gif: req.file ? `${req.file.filename}` : "",
     });
 
     console.log(chat);
