@@ -11,8 +11,9 @@ const chatSchema = new Schema({
     ref: "Room",
   },
   user: {
-    type: String,
+    type: ObjectId,
     required: true,
+    ref: "User",
   },
   chat: String,
   gif: String,
