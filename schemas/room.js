@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
+const {
+  Types: { ObjectId },
+} = Schema;
 const roomSchema = new Schema({
   title: {
     type: String,
@@ -15,8 +18,9 @@ const roomSchema = new Schema({
   },
 
   owner: {
-    type: String,
+    type: ObjectId,
     required: true,
+    ref: "User",
   },
 
   password: String,
