@@ -5,13 +5,16 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const nunjucks = require("nunjucks");
 const dotenv = require("dotenv");
+const passport = require("passport");
 const ColorHash = require("color-hash").default;
 
 dotenv.config();
 const webSocket = require("./socket");
 const indexRouter = require("./routes");
 const chatRouter = require("./routes/chat");
+const authRouter = require("./routes/auth");
 const connect = require("./schemas");
+require("./passport/index")();
 
 const app = express();
 app.set("port", process.env.PORT || 3000);
@@ -39,6 +42,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(sessionMiddleware);
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use((req, res, next) => {
   if (!req.session.color) {
@@ -50,6 +55,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/", indexRouter);
+app.use("/auth", authRouter);
 app.use("/chat", chatRouter);
 
 app.use((req, res, next) => {

@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 const Room = require("../schemas/room");
 const Chat = require("../schemas/chat");
+const { isNotLoggedIn, isLoggedIn } = require("../middlewares");
 
-router.get("/", async (req, res, next) => {
+router.get("/", isLoggedIn, async (req, res, next) => {
   try {
     const rooms = await Room.find({});
     res.render("main", { rooms, title: "GIF 채팅방" });
@@ -22,7 +23,7 @@ router.post("/room", async (req, res, next) => {
     const newRoom = await Room.create({
       title: req.body.title,
       max: req.body.max,
-      owner: req.session.color,
+      owner: req.user._id,
       password: req.body.password,
     });
     const io = req.app.get("io");
