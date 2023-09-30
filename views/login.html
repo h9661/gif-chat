@@ -1,0 +1,30 @@
+{% extends 'layout.html' %} {% block content %}
+
+<div class="container">
+  <!-- Heading -->
+  <h1>SIGN IN</h1>
+
+  <!-- Form -->
+  <form action="" method="post">
+    <!-- email input -->
+    <div class="first-input input__block first-input__block">
+      <input type="text" placeholder="username" class="input" id="username" />
+    </div>
+    <!-- password input -->
+    <div class="input__block">
+      <input type="password" placeholder="Password" class="input" id="password" />
+    </div>
+
+    <button class="signin__btn">
+      login
+    </button>
+
+    <div class="signup__link">
+      <a href="/auth/signup">signup</a>
+    </div>
+  </form>
+</div>
+
+<footer>
+</footer>
+{% endblock %}
