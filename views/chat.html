@@ -1,56 +1,57 @@
 {% extends 'layout.html' %} {% block content %}
 <h1>{{title}}</h1>
-<a href="/" id="exit-btn">방 나가기</a>
+<a href="/" class="btn btn-danger" id="exit-btn">방 나가기</a>
 <h1 id="manager"></h1>
-<fieldset>
-  <legend>채팅 내용</legend>
-  <div id="chat-list">
-    {% for chat in chats %} {% if chat.user === user %}
-    <div class="mine" style="color: {{chat.user}}">
-      <div>{{chat.user}}</div>
-      {% if chat.gif %}
-      <img src="/gif/{{chat.gif}}" />
-      {% else %}
-      <div>{{chat.chat}}</div>
-      {% endif %}
+<div class="container">
+  <fieldset>
+    <legend>채팅 내용</legend>
+    <div id="chat-list">
+
     </div>
-    {% elif chat.user === 'system' %}
-    <div class="system">
-      <div>{{chat.chat}}</div>
+  </fieldset>
+
+  <!-- 채팅 -->
+  <form action="/chat" id="chat-form" method="post" enctype="multipart/form-data" class="container mt-3">
+    <div class="form-group">
+      <label for="gif">GIF 올리기</label>
+      <input type="file" id="gif" name="gif" accept="image/gif" class="form-control-file">
     </div>
-    {% else %}
-    <div class="other" style="color: {{chat.user}}">
-      <div>{{chat.user}}</div>
-      {% if chat.gif %}
-      <img src="/gif/{{chat.gif}}" />
-      {% else %}
-      <div>{{chat.chat}}</div>
-      {% endif %}
+    <div class="form-group">
+      <input type="text" id="chat" name="chat" class="form-control" placeholder="메시지 입력">
     </div>
-    {% endif %} {% endfor %}
+    <button type="submit" class="btn btn-primary">전송</button>
+  </form>
+  <!-- 유저 리스트 -->
+
+  <div id="user-list" class="container mt-3"></div>
+  <!-- DM -->
+  <form action="/dm" id="dm-form" method="post" enctype="multipart/form-data" class="container mt-3">
+    <div class="form-group">
+      <label for="dm-gif">DM GIF 올리기</label>
+      <input type="file" id="dm-gif" name="dm-gif" accept="image/gif" class="form-control-file">
+    </div>
+    <div class="form-group">
+      <label for="dm-chat">메시지</label>
+      <input type="text" id="dm-chat" name="dm-chat" class="form-control" placeholder="메시지 입력">
+    </div>
+    <div class="form-group">
+      <label for="dm-id">ID</label>
+      <input type="text" id="dm-id" name="dm-id" class="form-control" placeholder="상대방 ID 입력">
+    </div>
+    <button type="submit" class="btn btn-primary">DM 전송</button>
+  </form>
+
+  <!-- 매니져 영역 -->
+  <div id="manager-area" style="display: none;" class="container mt-3">
+    <div class="form-group">
+      <label for="manager-kick">이름</label>
+      <input type="text" id="manager-kick" name="manager-kick" class="form-control" placeholder="이름 입력">
+    </div>
+    <button type="button" id="manager-btn" class="btn btn-danger">강퇴하기</button>
   </div>
-</fieldset>
-<form action="/chat" id="chat-form" method="post" enctype="multipart/form-data">
-  <label for="gif">GIF 올리기</label>
-  <input type="file" id="gif" name="gif" accept="image/gif" />
-  <input type="text" id="chat" name="chat" />
-  <button type="submit">전송</button>
-</form>
-<div id="user-list"></div>
-<form accept="/dm" id="dm-form" enctype="multipart/form-data">
-  <label for="dm-gif">DM GIF 올리기</label>
-  <input type="file" id="dm-gif" name="dm-gif" accept="image/gif" />
-  <label for="dm-chat">메시지</label>
-  <input type="text" id="dm-chat" name="dm-chat" />
-  <label for="dm-id">ID</label>
-  <input type="text" id="dm-id" name="dm-id" />
-  <button type="submit">DM 전송</button>
-</form>
-<div id="manager-area" style="display: none;">
-  <label for="manager-kick">이름</label>
-  <input type="text" id="manager-kick" name="manager-kick" />
-  <button type="button" id="manager-btn">강퇴하기</button>
 </div>
+
+
 <script src="/socket.io/socket.io.js"></script>
 <script>
   const socket = io.connect("http://localhost:3000/chat", {
@@ -95,8 +96,8 @@
     const div = document.createElement("div");
     div.classList.add("other");
     const user = document.createElement("div");
-    user.textContent = data.user;
-    user.style.color = data.user;
+    user.textContent = data.username
+    user.style.color = data.color
     div.appendChild(user);
     if (data.gif) {
       const img = document.createElement("img");
@@ -155,14 +156,16 @@
     const gif = document.querySelector("#gif").files[0];
     const room = new URL(location).pathname.split("/").at(-1);
     const user = "{{user}}";
-
-    console.log(chat, gif, room, user);
+    const username = "{{username}}";
+    const color = "{{color}}";
 
     const formData = new FormData();
     formData.append("chat", chat);
     formData.append("gif", gif);
     formData.append("room", room);
     formData.append("user", user);
+    formData.append("username", username);
+    formData.append("color", color);
 
     fetch("/chat", {
       method: "POST",
@@ -178,8 +181,8 @@
         const div = document.createElement("div");
         div.classList.add("mine");
         const user = document.createElement("div");
-        user.textContent = data.user;
-        user.style.color = data.user;
+        user.textContent = username
+        user.style.color = color
         div.appendChild(user);
         if (data.gif) {
           const img = document.createElement("img");

@@ -1,34 +1,37 @@
 {% extends 'layout.html' %} {% block content %}
-<h1>GIF 채팅방</h1>
-<fieldset>
-  <legend>채팅방 목록</legend>
-  <table>
-    <thead>
-      <tr>
-        <th>방 제목</th>
-        <th>종류</th>
-        <th>허용 인원</th>
-        <th>방장</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for room in rooms %}
-      <tr data-id="{{room._id}}">
-        <td>{{room.title}}</td>
-        <td>{{'비밀방' if room.password else '공개방'}}</td>
-        <td>{{room.max}}</td>
-        <td style="color: {{room.owner}}">{{room.owner}}</td>
-        <td>
-          <button data-password="{{'true' if room.password else 'false'}}" data-id="{{room._id}}"
-            class="join-btn">입장</button>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <div class="error-message">{{error}}</div>
-  <a href="/room">채팅방 생성</a>
-</fieldset>
+<div class="container">
+  <h1>GIF 채팅방</h1>
+  <fieldset>
+    <legend>채팅방 목록</legend>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>방 제목</th>
+          <th>종류</th>
+          <th>허용 인원</th>
+          <th>방장</th>
+          <th>입장</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for room in rooms %}
+        <tr data-id="{{room._id}}">
+          <td>{{room.title}}</td>
+          <td>{{'비밀방' if room.password else '공개방'}}</td>
+          <td>{{room.max}}</td>
+          <td style="color: {{room.owner.color}}">{{room.owner.username}}</td>
+          <td>
+            <button data-password="{{'true' if room.password else 'false'}}" data-id="{{room._id}}"
+              class="btn btn-primary join-btn">입장</button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="alert alert-danger">{{error}}</div>
+    <a href="/room" class="btn btn-success">채팅방 생성</a>
+  </fieldset>
+</div>
 <script src="/socket.io/socket.io.js"></script>
 <script>
   const socket = io.connect("http://localhost:3000/room", {
@@ -49,8 +52,8 @@
     td.textContent = data.max;
     tr.appendChild(td);
     td = document.createElement("td");
-    td.style.color = data.owner;
-    td.textContent = data.owner;
+    td.style.color = data.owner.color;
+    td.textContent = data.owner.username;
     tr.appendChild(td);
     td = document.createElement("td");
     const button = document.createElement("button");

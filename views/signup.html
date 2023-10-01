@@ -1,34 +1,63 @@
 {% extends 'layout.html' %} {% block content %}
 
-<div class="container">
+<!--Main Navigation-->
+<header>
+  <style>
+    #intro {
+      background-image: url(https://mdbootstrap.com/img/new/fluid/city/008.jpg);
+      height: 100vh;
+    }
 
-  <!-- Heading -->
-  <h1>SIGN IN</h1>
+    /* Height for devices larger than 576px */
+    @media (min-width: 992px) {
+      #intro {
+        margin-top: -58.59px;
+      }
+    }
 
-  <!-- Form -->
-  <form action="" method="post">
+    .navbar .nav-link {
+      color: #fff !important;
+    }
+  </style>
 
-    <!-- email input -->
-    <div class="first-input input__block first-input__block">
-      <input type="text" placeholder="username" class="input" id="username" />
+  <!-- Background image -->
+  <div id="intro" class="bg-image shadow-2-strong">
+    <div class="mask d-flex align-items-center h-100" style="background-color: rgba(0, 0, 0, 0.8);">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-xl-5 col-md-8">
+            <form class="bg-white  rounded-5 shadow-5-strong p-5" action="/auth/signup" method="post">
+              <!-- Username input -->
+              <div class="form-outline mb-4">
+                <input type="text" id="username" name="username" class="form-control" />
+                <label class="form-label" for="username">username</label>
+              </div>
+
+              <!-- Password input -->
+              <div class="form-outline mb-4">
+                <input type="password" id="password" name="password" class="form-control" />
+                <label class="form-label" for="password">Password</label>
+              </div>
+
+              <div class="form-outline mb-4">
+                <input type="text" id="nick" name="nick" class="form-control" />
+                <label class="form-label" for="nick">nick</label>
+              </div>
+
+              <!-- Submit button -->
+              <button type="submit" class="btn btn-primary btn-block">Sign up</button>
+
+              <!-- back to login page -->
+              <div class="text-center">
+                <p>Already a member? <a href="/auth/login">Sign in</a></p>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <!-- password input -->
-    <div class="input__block">
-      <input type="password" placeholder="Password" class="input" id="password" />
-    </div>
-
-    <button class="signin__btn">
-      signup
-    </button>
-
-    <!-- go to login page -->
-    <div class="signup__link">
-      <a href="/auth/login">login</a>
-    </div>
-  </form>
-</div>
-
-<footer></footer>
+  </div>
+  <!-- Background image -->
+</header>
+<!--Main Navigation-->
 
 {% endblock %}
