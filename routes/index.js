@@ -9,8 +9,6 @@ router.get("/", isLoggedIn, async (req, res, next) => {
     // 방들을 가져올 때, owner의 username을 join해서 가져온다.
     const rooms = await Room.find({}).populate("owner");
 
-    console.log(rooms);
-
     res.render("main", { rooms, title: "GIF 채팅방" });
   } catch (error) {
     console.error(error);
