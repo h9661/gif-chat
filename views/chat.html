@@ -135,8 +135,8 @@
     const div = document.createElement("div");
     div.classList.add("dm");
     const user = document.createElement("div");
-    user.textContent = `direct message from ${data.user}`;
-    user.style.color = data.user;
+    user.textContent = `direct message from ${data.username}`;
+    user.style.color = data.color;
     div.appendChild(user);
     if (data.gif) {
       const img = document.createElement("img");
@@ -204,6 +204,8 @@
     const gif = document.querySelector("#dm-gif").files[0];
     const room = new URL(location).pathname.split("/").at(-1);
     const user = "{{user}}";
+    const username = "{{username}}";
+    const color = "{{color}}";
 
     const id = document.querySelector("#dm-id").value;
 
@@ -212,6 +214,8 @@
     formData.append("gif", gif);
     formData.append("room", room);
     formData.append("user", user);
+    formData.append("username", username);
+    formData.append("color", color);
 
     fetch("/chat", {
       method: "POST",
@@ -224,6 +228,8 @@
           chat: data.chat,
           gif: data.gif,
           user: data.user,
+          username: data.username,
+          color: data.color,
         });
 
         document.querySelector("#dm-chat").value = "";

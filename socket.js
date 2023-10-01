@@ -49,6 +49,8 @@ module.exports = (server, app, sessionMiddleware) => {
     socket.on("dm-request", (data) => {
       socket.to(data.id).emit("dm", {
         user: data.user,
+        username: data.username,
+        color: data.color,
         chat: data.chat,
         gif: data.gif,
       });
