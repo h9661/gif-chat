@@ -6,7 +6,11 @@ const { isNotLoggedIn, isLoggedIn } = require("../middlewares");
 
 router.get("/", isLoggedIn, async (req, res, next) => {
   try {
-    const rooms = await Room.find({});
+    // 방들을 가져올 때, owner의 username을 join해서 가져온다.
+    const rooms = await Room.find({}).populate("owner");
+
+    console.log(rooms);
+
     res.render("main", { rooms, title: "GIF 채팅방" });
   } catch (error) {
     console.error(error);
@@ -26,8 +30,15 @@ router.post("/room", async (req, res, next) => {
       owner: req.user._id,
       password: req.body.password,
     });
+    const data = {
+      title: newRoom.title,
+      max: newRoom.max,
+      owner: req.user,
+      password: newRoom.password,
+      _id: newRoom._id,
+    };
     const io = req.app.get("io");
-    io.of("/room").emit("newRoom", newRoom);
+    io.of("/room").emit("newRoom", data);
     if (req.body.password) {
       // 비밀번호가 있는 방이면
       res.redirect(`/room/${newRoom._id}?password=${req.body.password}`);
@@ -58,8 +69,9 @@ router.get("/room/:id", async (req, res, next) => {
     return res.render("chat", {
       room,
       title: room.title,
-      chats: [],
-      user: req.session.color,
+      user: req.user._id,
+      username: req.user.username,
+      color: req.user.color,
     });
   } catch (error) {
     console.error(error);
