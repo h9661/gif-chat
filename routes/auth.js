@@ -34,8 +34,6 @@ router.post("/signup", isNotLoggedIn, async (req, res, next) => {
   const colorHash = new ColorHash();
   let color = colorHash.hex(username);
 
-  console.log(username, color);
-
   // hash password
   const hash = await bcrypt.hash(password, 12);
 
