@@ -27,10 +27,17 @@ router.post("/", upload.single("gif"), async (req, res, next) => {
       gif: req.file ? `${req.file.filename}` : "",
     });
 
-    console.log(chat);
+    const data = {
+      room: req.body.room,
+      user: req.body.user,
+      username: req.body.username,
+      color: req.body.color,
+      chat: req.body.chat,
+      gif: req.file ? `${req.file.filename}` : "",
+    };
 
     await chat.save();
-    res.send(chat);
+    res.send(data);
   } catch (error) {
     console.error(error);
     next(error);
