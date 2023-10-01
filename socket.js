@@ -1,4 +1,5 @@
 const SocketIO = require("socket.io");
+const User = require("./schemas/user");
 
 module.exports = (server, app, sessionMiddleware) => {
   const io = SocketIO(server, { path: "/socket.io" });
@@ -23,13 +24,17 @@ module.exports = (server, app, sessionMiddleware) => {
   chat.on("connection", (socket) => {
     console.log("chat 네임스페이스에 접속");
 
-    socket.on("join", (data) => {
+    socket.on("join", async (data) => {
+      const userId = socket.request.session.passport?.user;
+      // userId로 DB에서 사용자 정보를 가져온다.
+      let tempUser = await User.findOne({ _id: userId });
+
       // data는 브라우저에서 보낸 방 아이디
       socket.join(data); // join(id): 방 아이디에 들어가는 메서드
       // to(id).emit("join", ...): 특정 방에 데이터를 보내는 메서드
       socket.to(data).emit("join", {
         user: "system",
-        chat: `${socket.request.session.color}님이 입장하셨습니다.`,
+        chat: `${tempUser.username}님이 입장하셨습니다.`,
         userCount: socket.adapter.rooms.get(data).size,
       });
     });
@@ -42,7 +47,7 @@ module.exports = (server, app, sessionMiddleware) => {
 
     socket.on("getUserList", (data) => {
       socket.emit("postUserList", {
-        userList: Array.from(socket.adapter.rooms.get(data)),
+        userList: Array.from(socket.adapter.rooms.get(data) || []),
       });
     });
 
@@ -56,13 +61,16 @@ module.exports = (server, app, sessionMiddleware) => {
       });
     });
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", async () => {
       console.log("chat 네임스페이스 접속 해제");
       const { referer } = socket.request.headers; // referer: 이전 페이지의 주소
       const roomId = referer.split("/").at(-1); // 방 아이디 추출
       socket.leave(roomId); // leave(id): 방 아이디에서 나가는 메서드
       const currentRoom = socket.adapter.rooms.get(roomId);
       const userCount = currentRoom ? currentRoom.size : 0;
+      const userId = socket.request.session.passport?.user;
+      // userId로 DB에서 사용자 정보를 가져온다.
+      const tempUser = await User.findOne({ _id: userId });
 
       if (userCount == 0) {
         fetch(`http://localhost:3000/room/${roomId}`, {
@@ -78,7 +86,7 @@ module.exports = (server, app, sessionMiddleware) => {
       } else {
         socket.to(roomId).emit("exit", {
           user: "system",
-          chat: `${socket.request.session.color}님이 퇴장하셨습니다.`,
+          chat: `${tempUser.username}님이 퇴장하셨습니다.`,
           userCount: socket.adapter.rooms.get(roomId).size,
         });
       }
