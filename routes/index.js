@@ -59,11 +59,16 @@ router.get("/room/:id", async (req, res, next) => {
       return res.redirect("/?error=비밀번호가 틀렸습니다.");
     }
     const io = req.app.get("io");
+    const connectedUsers = req.app.get("connectedUsers");
     const { rooms } = io.of("/chat").adapter;
 
     if (room.max <= rooms.get(req.params.id)?.size) {
       return res.redirect("/?error=허용 인원이 초과하였습니다.");
     }
+    if (connectedUsers[req.user._id]) {
+      return res.redirect("/?error=이미 채팅방에 참여하고 있습니다.");
+    }
+
     return res.render("chat", {
       room,
       title: room.title,

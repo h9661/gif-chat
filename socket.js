@@ -3,7 +3,11 @@ const User = require("./schemas/user");
 
 module.exports = (server, app, sessionMiddleware) => {
   const io = SocketIO(server, { path: "/socket.io" });
+  const connectedUsers = {};
+
   app.set("io", io);
+  app.set("connectedUsers", connectedUsers);
+
   const room = io.of("/room");
   const chat = io.of("/chat");
 
@@ -28,6 +32,7 @@ module.exports = (server, app, sessionMiddleware) => {
       const userId = socket.request.session.passport?.user;
       // userId로 DB에서 사용자 정보를 가져온다.
       let tempUser = await User.findOne({ _id: userId });
+      connectedUsers[socket.request.session.passport.user] = socket.id;
 
       // data는 브라우저에서 보낸 방 아이디
       socket.join(data); // join(id): 방 아이디에 들어가는 메서드
@@ -62,6 +67,7 @@ module.exports = (server, app, sessionMiddleware) => {
     });
 
     socket.on("disconnect", async () => {
+      connectedUsers[socket.request.session.passport.user] = null;
       console.log("chat 네임스페이스 접속 해제");
       const { referer } = socket.request.headers; // referer: 이전 페이지의 주소
       const roomId = referer.split("/").at(-1); // 방 아이디 추출

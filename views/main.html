@@ -32,6 +32,7 @@
     <a href="/room" class="btn btn-success">채팅방 생성</a>
   </fieldset>
 </div>
+{% block script %}
 <script src="/socket.io/socket.io.js"></script>
 <script>
   const socket = io.connect("http://localhost:3000/room", {
@@ -90,19 +91,16 @@
   document.querySelectorAll(".join-btn").forEach(function (btn) {
     btn.addEventListener("click", addBtnEvent);
   });
-</script>
-{% endblock %} {% block script %}
-<script>
-  window.onload = () => {
-    if (new URL(location.href).searchParams.get("error")) {
-      alert(new URL(location.href).searchParams.get("error"));
-    }
-  };
 
-  window.onload = () => {
-    if (new URL(location.href).searchParams.get("message")) {
-      alert(new URL(location.href).searchParams.get("message"));
-    }
+  if (new URL(location.href).searchParams.get("error")) {
+    alert(new URL(location.href).searchParams.get("error"));
+    location.href = "/";
+  }
+
+  if (new URL(location.href).searchParams.get("message")) {
+    alert(new URL(location.href).searchParams.get("message"));
+    location.href = "/";
   }
 </script>
+{% endblock %}
 {% endblock %}
