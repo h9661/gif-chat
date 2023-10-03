@@ -5,19 +5,17 @@
 <div class="container">
   <fieldset>
     <legend>채팅 내용</legend>
-    <div id="chat-list">
-
-    </div>
+    <div id="chat-list"></div>
   </fieldset>
 
   <!-- 채팅 -->
   <form action="/chat" id="chat-form" method="post" enctype="multipart/form-data" class="container mt-3">
     <div class="form-group">
       <label for="gif">GIF 올리기</label>
-      <input type="file" id="gif" name="gif" accept="image/gif" class="form-control-file">
+      <input type="file" id="gif" name="gif" accept="image/gif" class="form-control-file" />
     </div>
     <div class="form-group">
-      <input type="text" id="chat" name="chat" class="form-control" placeholder="메시지 입력">
+      <input type="text" id="chat" name="chat" class="form-control" placeholder="메시지 입력" />
     </div>
     <button type="submit" class="btn btn-primary">전송</button>
   </form>
@@ -28,29 +26,28 @@
   <form action="/dm" id="dm-form" method="post" enctype="multipart/form-data" class="container mt-3">
     <div class="form-group">
       <label for="dm-gif">DM GIF 올리기</label>
-      <input type="file" id="dm-gif" name="dm-gif" accept="image/gif" class="form-control-file">
+      <input type="file" id="dm-gif" name="dm-gif" accept="image/gif" class="form-control-file" />
     </div>
     <div class="form-group">
       <label for="dm-chat">메시지</label>
-      <input type="text" id="dm-chat" name="dm-chat" class="form-control" placeholder="메시지 입력">
+      <input type="text" id="dm-chat" name="dm-chat" class="form-control" placeholder="메시지 입력" />
     </div>
     <div class="form-group">
       <label for="dm-id">ID</label>
-      <input type="text" id="dm-id" name="dm-id" class="form-control" placeholder="상대방 ID 입력">
+      <input type="text" id="dm-id" name="dm-id" class="form-control" placeholder="상대방 ID 입력" />
     </div>
     <button type="submit" class="btn btn-primary">DM 전송</button>
   </form>
 
   <!-- 매니져 영역 -->
-  <div id="manager-area" style="display: none;" class="container mt-3">
+  <div id="manager-area" style="display: none" class="container mt-3">
     <div class="form-group">
       <label for="manager-kick">이름</label>
-      <input type="text" id="manager-kick" name="manager-kick" class="form-control" placeholder="이름 입력">
+      <input type="text" id="manager-kick" name="manager-kick" class="form-control" placeholder="이름 입력" />
     </div>
     <button type="button" id="manager-btn" class="btn btn-danger">강퇴하기</button>
   </div>
 </div>
-
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
@@ -96,8 +93,8 @@
     const div = document.createElement("div");
     div.classList.add("other");
     const user = document.createElement("div");
-    user.textContent = data.username
-    user.style.color = data.color
+    user.textContent = data.username;
+    user.style.color = data.color;
     div.appendChild(user);
     if (data.gif) {
       const img = document.createElement("img");
@@ -113,22 +110,23 @@
   socket.on("postUserList", function (data) {
     const div = document.querySelector("#user-list");
     div.innerHTML = "";
-    for (let i = 0; i < data.userList.length; i++) {
+
+    for (let key in data.userList) {
       let user = document.createElement("div");
-      user.textContent = data.userList[i];
-      if (data.userList[i] != socket.id) user.classList.add("other");
+      user.textContent = key;
+      if (key != "{{username}}") user.classList.add("other");
       else continue;
       div.appendChild(user);
     }
 
     let manager = document.querySelector("#manager");
 
-    if (data.userList.length == 0 || socket.id == data.userList[0]) manager.innerHTML = "나";
-    else manager.innerHTML = data.userList[0];
-
-    if (manager.innerHTML == "나") {
+    // first key in userList is a manager
+    if (!Object.keys(data.userList)[0] || Object.keys(data.userList)[0] == "{{username}}") {
+      manager.innerHTML = "나";
       document.querySelector("#manager-area").style.display = "block";
     } else {
+      manager.innerHTML = Object.keys(data.userList)[0];
       document.querySelector("#manager-area").style.display = "none";
     }
   });
@@ -149,7 +147,7 @@
       div.appendChild(chat);
     }
     document.querySelector("#chat-list").appendChild(div);
-  })
+  });
 
   document.querySelector("#chat-form").addEventListener("submit", function (e) {
     e.preventDefault();
@@ -182,8 +180,8 @@
         const div = document.createElement("div");
         div.classList.add("mine");
         const user = document.createElement("div");
-        user.textContent = username
-        user.style.color = color
+        user.textContent = username;
+        user.style.color = color;
         div.appendChild(user);
         if (data.gif) {
           const img = document.createElement("img");
@@ -236,8 +234,7 @@
         document.querySelector("#dm-chat").value = "";
         document.querySelector("#dm-gif").value = "";
       });
-
-  })
+  });
 
   document.querySelector("#manager-btn").addEventListener("click", (e) => {
     e.preventDefault();
