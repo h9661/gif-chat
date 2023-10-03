@@ -71,9 +71,9 @@
     div.classList.add("system");
     const chat = document.createElement("div");
     chat.textContent = `
-      ${data.chat}
-      현재 인원 : ${data.userCount} 명
-    `;
+        ${data.chat}
+        현재 인원 : ${data.userCount} 명
+      `;
     div.appendChild(chat);
     document.querySelector("#chat-list").appendChild(div);
 
@@ -122,7 +122,8 @@
     }
 
     let manager = document.querySelector("#manager");
-    if (socket.id == data.userList[0]) manager.innerHTML = "나";
+
+    if (data.userList.length == 0 || socket.id == data.userList[0]) manager.innerHTML = "나";
     else manager.innerHTML = data.userList[0];
 
     if (manager.innerHTML == "나") {
